@@ -14,6 +14,17 @@ const LITECOIN = {
   wif: 0xb0
 }
 
+const DASH = {
+  messagePrefix: '\x19DarkCoin Signed Message:\n',
+  bip32: {
+    public: 0x0488b21e,
+    private: 0x0488ade4
+  },
+  pubKeyHash: 0x4c,
+  scriptHash: 0x10,
+  wif: 0xcc
+}
+
 // deterministic RNG for testing only
 function rng () { return Buffer.from('zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz') }
 
@@ -136,5 +147,14 @@ describe('bitcoinjs-lib (addresses)', function () {
 
     assert.strictEqual(address, 'LZJSxZbjqJ2XVEquqfqHg1RQTDdfST5PTn')
     assert.strictEqual(wif, 'T7A4PUSgTDHecBxW1ZiYFrDNRih2o7M8Gf9xpoCgudPF9gDiNvuS')
+  })
+
+  it('can generate a Dash address', function () {
+    const keyPair = bitcoin.ECPair.makeRandom({ network: DASH, rng: rng })
+    const wif = keyPair.toWIF()
+    const { address } = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey, network: DASH })
+
+    assert.strictEqual(address, 'XpmLXbwoiM14PNkLXRADFX3S5Lr5N6m3nQ')
+    assert.strictEqual(wif, 'XFPiPzXsMWwVtgL1VgmYYis1PtKJApwUq2bcVWuLf2VB2woNu3sY')
   })
 })
